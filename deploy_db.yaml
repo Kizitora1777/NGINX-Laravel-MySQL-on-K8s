@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: develop-db
+  name: develop-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: develop-db
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: develop-db
+    spec:
+      containers:
+      - image: mysql:5.7.28
+        name: develop-db
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_DATABASE
+          value: database
+        - name: MYSQL_USER
+          value: db-user
+        - name: MYSQL_PASSWORD
+          value: db-pass
+        volumeMounts:
+        - name: mysql-develop-storage
+          mountPath: /var/lib/mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+      volumes:
+      - name: mysql-develop-storage
+        persistentVolumeClaim:
+          claimName: mysql-develop-pvc
+status: {}

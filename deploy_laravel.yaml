@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: laravel-develop
+  name: laravel-develop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: laravel-develop
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: laravel-develop
+    spec:
+      containers:
+      - image: entaku5409/laravel-develop_multi-user-auth
+        name: laravel-develop
+        ports:
+        - containerPort: 9000
+        envFrom:
+          - configMapRef:
+              name: laravel-develop-config
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 30m
+            memory: 30Mi
+
+      - image: entaku5409/nginx-develop_multi-user-auth
+        name: nginx-develop
+        ports:
+        - containerPort: 80
+        envFrom:
+          - configMapRef:
+              name: laravel-develop-config
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 30m
+            memory: 30Mi
+      volumes:
+        - name: laravel-develop-config
+          configMap:
+            name: laravel-develop-config
+status: {}
